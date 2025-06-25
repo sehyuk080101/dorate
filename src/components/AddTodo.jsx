@@ -165,7 +165,14 @@ export const AddTodo = ({ onAdd, categories }) => {
       setTime('');
       setPreviewDate('');
       setPreviewTime('');
-      setExpand(false);
+      
+      // 입력란에 포커스를 다시 맞춰서 확장 상태 유지
+      setTimeout(() => {
+        const textInput = e.target.querySelector('input[type="text"]');
+        if (textInput) {
+          textInput.focus();
+        }
+      }, 0);
     }
   };
 
@@ -187,10 +194,22 @@ export const AddTodo = ({ onAdd, categories }) => {
   // 입력란 포커스/블러 핸들러
   const handleInputFocus = () => setExpand(true);
   const handleInputBlur = (e) => {
-    // 입력란이 비어있고 다른 요소로 포커스가 이동할 때만 축소
-    if (!text.trim() && !e.currentTarget.contains(e.relatedTarget)) {
-      setExpand(false);
+    // 폼 내부 요소로 포커스가 이동하는지 확인
+    const formElement = e.currentTarget.closest('form');
+    const relatedTarget = e.relatedTarget;
+    
+    // submit 버튼으로 포커스가 이동하는 경우 축소하지 않음
+    if (relatedTarget && relatedTarget.type === 'submit') {
+      return;
     }
+    
+    // 폼 내부 요소로 포커스가 이동하거나, 입력란이 비어있지 않으면 유지
+    if (formElement && formElement.contains(relatedTarget) || text.trim()) {
+      return;
+    }
+    
+    // 폼 외부로 포커스가 이동하고 입력란이 비어있으면 축소
+    setExpand(false);
   };
 
   return (
@@ -209,6 +228,7 @@ export const AddTodo = ({ onAdd, categories }) => {
           <button
             type="submit"
             disabled={!text.trim()}
+            onMouseDown={() => setExpand(true)}
             className={`px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 ${
               text.trim()
                 ? 'bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 shadow-sm hover:shadow-md'
@@ -232,6 +252,7 @@ export const AddTodo = ({ onAdd, categories }) => {
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
+                onFocus={() => setExpand(true)}
                 className={`px-3 py-1.5 text-sm rounded-lg border ${priorityColors[priority]} focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}
               >
                 <option value="low">낮음</option>
@@ -244,6 +265,7 @@ export const AddTodo = ({ onAdd, categories }) => {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                onFocus={() => setExpand(true)}
                 className="px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
               >
                 {categories.map((cat) => (
@@ -259,6 +281,7 @@ export const AddTodo = ({ onAdd, categories }) => {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
+                onFocus={() => setExpand(true)}
                 className="px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                 min={new Date().toISOString().split('T')[0]}
                 placeholder="마감일"
@@ -267,6 +290,7 @@ export const AddTodo = ({ onAdd, categories }) => {
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
+                onFocus={() => setExpand(true)}
                 className="px-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                 placeholder="시간"
               />
