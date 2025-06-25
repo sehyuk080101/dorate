@@ -12,11 +12,29 @@ export const Modal = ({
   // 모달이 닫혀있으면 아무것도 렌더링하지 않습니다
   if (!open) return null;
   
+  // 배경 클릭 시 모달 닫기
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  // 모달 내용 클릭 시 이벤트 전파 방지
+  const handleModalClick = (e) => {
+    e.stopPropagation();
+  };
+  
   return (
-    // 모달 오버레이 (배경)
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      {/* 모달 컨테이너 */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700">
+    // 모달 오버레이 (배경) - 클릭 시 닫기
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+      onClick={handleBackdropClick}
+    >
+      {/* 모달 컨테이너 - 클릭 시 이벤트 전파 방지 */}
+      <div 
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200 dark:border-gray-700"
+        onClick={handleModalClick}
+      >
         {/* 모달 헤더 */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-700">
           {/* 모달 제목 */}

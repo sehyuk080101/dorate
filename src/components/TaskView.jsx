@@ -12,7 +12,6 @@ export const TaskView = ({
   onDelete,
   onUpdate,
   setTodos,
-  addTodoExpandControl,
   addComment,
   deleteComment,
   addTag,
@@ -20,7 +19,7 @@ export const TaskView = ({
   commentName,
 }) => {
   const [internalExpanded, setInternalExpanded] = useState(false);
-  const expandControl = addTodoExpandControl || { isExpanded: internalExpanded, setIsExpanded: setInternalExpanded };
+  const expandControl = { isExpanded: internalExpanded, setIsExpanded: setInternalExpanded };
 
   const filteredTodos = useMemo(() => {
     return todos.filter(todo => {
@@ -44,7 +43,7 @@ export const TaskView = ({
   return (
     <div className="p-6 space-y-6">
       {filter === 'all' && (
-        <AddTodo onAdd={onAdd} categories={categories} isExpanded={expandControl.isExpanded} setIsExpanded={expandControl.setIsExpanded} />
+        <AddTodo onAdd={onAdd} categories={categories} />
       )}
       <TodoList 
         todos={filteredTodos}

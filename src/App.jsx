@@ -41,15 +41,13 @@ function App() {
     return saved === 'true' ? true : false;
   });
   
-  // 할 일 추가 폼 확장 상태
-  const [addTodoExpanded, setAddTodoExpanded] = useState(false);
-  
   // 댓글 작성자 이름 상태 (로컬 스토리지에서 초기값 가져오기)
   const [commentName, setCommentName] = useState(() => {
-    return localStorage.getItem('dorate-comment-name') || '익명';
+    const saved = localStorage.getItem('dorate-comment-name');
+    return saved || '익명';
   });
   
-  // 데이터 초기화 모달 표시 상태
+  // 리셋 모달 상태
   const [showResetModal, setShowResetModal] = useState(false);
 
   // URL 해시를 확인하여 초기 탭을 설정하는 효과
@@ -261,7 +259,6 @@ function App() {
             onToggle={toggleTodo}
             onDelete={deleteTodo}
             onUpdate={updateTodo}
-            addTodoExpandControl={{ isExpanded: addTodoExpanded, setIsExpanded: setAddTodoExpanded }}
             setTodos={setTodos}
             addComment={addComment}
             deleteComment={deleteComment}
@@ -303,7 +300,6 @@ function App() {
             activeTab={activeTab} 
             onTabChange={handleTabChange} 
             stats={stats}
-            onQuickAdd={() => setAddTodoExpanded(true)}
             showResetModal={showResetModal}
           />
         </div>
@@ -323,7 +319,6 @@ function App() {
                 onToggle={toggleTodo}
                 onDelete={deleteTodo}
                 onUpdate={updateTodo}
-                addTodoExpandControl={{ isExpanded: addTodoExpanded, setIsExpanded: setAddTodoExpanded }}
                 setTodos={setTodos}
                 addComment={addComment}
                 deleteComment={deleteComment}

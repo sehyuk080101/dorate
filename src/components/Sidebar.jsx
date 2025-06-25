@@ -12,7 +12,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
-export const Sidebar = ({ activeTab, onTabChange, stats, onQuickAdd, showResetModal }) => {
+export const Sidebar = ({ activeTab, onTabChange, stats, showResetModal }) => {
   const menuItems = [
     {
       id: 'all',

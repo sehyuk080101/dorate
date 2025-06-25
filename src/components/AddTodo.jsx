@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Calendar, Flag, Tag } from 'lucide-react';
 
-export const AddTodo = ({ onAdd, categories, isExpanded: externalExpanded, setIsExpanded: setExternalExpanded }) => {
+export const AddTodo = ({ onAdd, categories }) => {
   const [text, setText] = useState('');
   const [priority, setPriority] = useState('medium');
   const [category, setCategory] = useState(categories[0]?.name || 'Work');
@@ -12,9 +12,9 @@ export const AddTodo = ({ onAdd, categories, isExpanded: externalExpanded, setIs
   const [previewDate, setPreviewDate] = useState('');
   const [previewTime, setPreviewTime] = useState('');
 
-  // 외부 제어 우선
-  const expanded = externalExpanded !== undefined ? externalExpanded : isExpanded;
-  const setExpand = setExternalExpanded || setIsExpanded;
+  // 내부 상태만 사용
+  const expanded = isExpanded;
+  const setExpand = setIsExpanded;
 
   // 텍스트에서 날짜/시간 파싱 (한국어 주요 패턴 지원)
   const parseDateTimeFromText = (input) => {
@@ -165,6 +165,7 @@ export const AddTodo = ({ onAdd, categories, isExpanded: externalExpanded, setIs
       setTime('');
       setPreviewDate('');
       setPreviewTime('');
+      setExpand(false);
     }
   };
 
@@ -186,19 +187,22 @@ export const AddTodo = ({ onAdd, categories, isExpanded: externalExpanded, setIs
   // 입력란 포커스/블러 핸들러
   const handleInputFocus = () => setExpand(true);
   const handleInputBlur = (e) => {
-    // 폼 내 다른 요소 클릭 시에는 유지, 폼 전체 포커스 아웃 시에만 닫힘
-    if (!e.currentTarget.contains(e.relatedTarget)) setExpand(false);
+    // 입력란이 비어있고 다른 요소로 포커스가 이동할 때만 축소
+    if (!text.trim() && !e.currentTarget.contains(e.relatedTarget)) {
+      setExpand(false);
+    }
   };
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 md:p-6 mb-4 md:mb-6">
-      <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4" tabIndex={-1} onBlur={handleInputBlur}>
+      <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4" tabIndex={-1}>
         <div className="flex flex-col md:flex-row gap-2 md:gap-3">
           <input
             type="text"
             value={text}
             onChange={handleTextChange}
             onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             placeholder="새 할 일을 입력하세요... (예: 내일 15:30 회의)"
             className="flex-1 px-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
           />
